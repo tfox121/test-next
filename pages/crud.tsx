@@ -1,15 +1,15 @@
 import React, { ChangeEvent, MouseEvent, useState } from 'react';
 import {
-  Box, Button, FormControl, Input, InputLabel, List,
+  Box, Button, FormControl, Input, InputLabel,
 } from '@material-ui/core';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import axios from 'axios';
-import { QueryObserverResult, useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 
 import { inputTemplate } from '../config/constants';
 import endpointsConfig from '../config/endpoints.config';
 import queryClient from '../config/queryClient';
-import PostItem from '../components/PostItem';
+import PostList from '../components/PostList';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -22,24 +22,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     justifyContent: 'center',
     width: 'unset',
   },
-  list: {
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  inline: {
-    display: 'inline',
-  },
 }));
 
 const Crud = () => {
   const [inputData, setInputData] = useState(inputTemplate);
   const classes = useStyles();
-  const { isLoading, error, data } = useQuery<QueryObserverResult, Error, any[]>('postData', () => fetch(`${endpointsConfig.ApiUrl}/posts`).then((res) => res.json()));
-
-  console.log('render...');
 
   const createPost = async (newPost: { author: string, title: string }):Promise<void> => {
-    console.log('POST');
     await axios.post(`${endpointsConfig.ApiUrl}/posts`, newPost);
   };
 
@@ -50,10 +39,6 @@ const Crud = () => {
     },
   });
 
-  if (isLoading) return 'Loading...';
-
-  if (error) return `An error has occurred: ${error.message}`;
-
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void => {
     setInputData({ ...inputData, [e.target.id]: e.target.value });
   };
@@ -62,10 +47,6 @@ const Crud = () => {
     e.preventDefault();
     mutation.mutate(inputData);
   };
-
-  if (!data) {
-    return null;
-  }
 
   return (
     <Box my={4}>
@@ -84,11 +65,7 @@ const Crud = () => {
           </Button>
         </Box>
       </form>
-      <List className={classes.list}>
-        {data.map((post) => (
-          <PostItem post={post} key={post.id} />
-        ))}
-      </List>
+      <PostList />
     </Box>
   );
 };
