@@ -34,7 +34,11 @@ const PostItem = ({ post }: { post: { id: string, title: string, author:string }
   const [postData, setPostData] = useState(post || inputTemplate);
   const classes = useStyles();
 
-  const editPost = async (editedPost: { id: string | undefined, author: string, title: string }): Promise<void> => {
+  const editPost = async (editedPost: {
+    id: string | undefined,
+    author: string,
+    title: string
+  }): Promise<void> => {
     await axios.patch(`${endpointsConfig.ApiUrl}/posts/${editedPost.id}`, editedPost);
   };
 

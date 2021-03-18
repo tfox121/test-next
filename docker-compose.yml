@@ -1,0 +1,38 @@
+version: "3.7"
+
+# x-common-props: &common-props
+#   build:
+#     context: ./
+#     target: base
+#   working_dir: /base
+#   volumes:
+#     - ./app:/base
+#     - node_modules:/base/node_modules
+
+# services:
+#   npm: 
+#     <<: *common-props
+#     entrypoint: npm
+#   dev:
+#     <<: *common-props
+#     ports:
+#       - "3001:3001"
+#     command: npm run dev
+# volumes:
+#   node_modules:
+
+
+services:
+
+  test-next:
+    container_name: test-next
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - 5000:3000
+    environment:
+      - NEXTAUTH_URL=http://localhost:5000
